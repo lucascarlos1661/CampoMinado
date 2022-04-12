@@ -7,4 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="nearMines1">#0000FF</color>
+    <color name="nearMines2">#007B00</color>
+    <color name="nearMines3">#FF0000</color>
+    <color name="nearMines4">#00007B</color>
+    <color name="nearMines5">#7B0000</color>
 </resources>

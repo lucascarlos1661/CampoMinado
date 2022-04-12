@@ -8,16 +8,29 @@
     android:layout_gravity="center"
     tools:ignore="ContentDescription">
 
-    <ImageView
-        android:id="@+id/opened_field"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/opened_field"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/opened_field"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/opened_field"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/near_mines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/opened_field"
+            android:layout_alignTop="@+id/opened_field"
+            android:layout_alignEnd="@+id/opened_field"
+            android:layout_alignBottom="@+id/opened_field"
+            android:layout_margin="1dp"
+            android:gravity="center"
+            android:visibility="gone" />
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/regular_field"
@@ -57,16 +70,6 @@
         android:layout_height="wrap_content"
         android:padding="3dp"
         android:src="@drawable/flag"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

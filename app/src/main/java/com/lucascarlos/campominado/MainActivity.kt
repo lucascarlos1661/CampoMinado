@@ -4,11 +4,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.lucascarlos.campominado.adapters.ColumnAdapter
 import com.lucascarlos.campominado.databinding.ActivityMainBinding
-import com.lucascarlos.campominado.src.Params
 import com.lucascarlos.campominado.viewModel.MainActivityViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.recyclerFields.apply {
             layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.HORIZONTAL, false)
-            recyclerViewAdapter = ColumnAdapter(this@MainActivity)
+            recyclerViewAdapter = ColumnAdapter(this@MainActivity) { viewModelStore }
             adapter = recyclerViewAdapter
         }
 
@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getBoardObserver().observe(this, Observer {
             recyclerViewAdapter.setListData(it)
+            recyclerViewAdapter.notifyDataSetChanged()
         })
     }
 }

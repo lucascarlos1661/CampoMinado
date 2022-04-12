@@ -8,13 +8,16 @@ import kotlin.math.floor
 class Params() {
 
     private val blockSize: Int = 30
-    val fontSize: Int = 15
     private val headerRatio: Double = 0.15
-    val difficultLevel: Double = 0.1
     private val marginHorizontalBoard = 5
+    val difficultLevel: Double = 0.1
 
     private var screenWidthInDp: Float = 0F
     private var screenHeightInDp: Float = 0F
+
+    fun getMinesAmount(context: Context): Int {
+        return ((getColumnsAmount(context) * getRowsAmount(context)) * difficultLevel).toInt()
+    }
 
     fun getColumnsAmount(context: Context): Int {
         val width: Float = getScreenWidth(context) - marginHorizontalBoard
