@@ -1,48 +1,49 @@
 package com.lucascarlos.campominado.src
 
-import android.content.Context
 import android.content.res.Resources
 import android.util.DisplayMetrics
 import kotlin.math.floor
 
-class Params() {
+class Params {
 
     private val blockSize: Int = 30
     private val headerRatio: Double = 0.15
     private val marginHorizontalBoard = 5
-    val difficultLevel: Double = 0.1
+    private val marginBottomBoard = 6
+    private val difficultLevel: Double = 0.07
 
     private var screenWidthInDp: Float = 0F
     private var screenHeightInDp: Float = 0F
 
-    fun getMinesAmount(context: Context): Int {
-        return ((getColumnsAmount(context) * getRowsAmount(context)) * difficultLevel).toInt()
+    fun getMinesAmount(): Int {
+        return ((getColumnsAmount() * getRowsAmount()) * difficultLevel).toInt()
     }
 
-    fun getColumnsAmount(context: Context): Int {
-        val width: Float = getScreenWidth(context) - marginHorizontalBoard
+    fun getColumnsAmount(): Int {
+        val width: Float = getScreenWidth() - marginHorizontalBoard
         return floor((width / blockSize).toDouble()).toInt()
     }
 
-    fun getRowsAmount(context: Context): Int {
-        val totalHeight = getScreenHeight(context)
-        val boardHeight = totalHeight * (1 - headerRatio)
+    fun getRowsAmount(): Int {
+        val totalHeight = getScreenHeight()
+        val boardHeight = totalHeight * (1 - headerRatio) - marginBottomBoard
         return floor(boardHeight / blockSize).toInt()
     }
 
-    private fun getScreenWidth(context: Context): Float {
+    private fun getScreenWidth(): Float {
         val widthPixels: Int = Resources.getSystem().displayMetrics.widthPixels
-        screenWidthInDp = convertPixelsToDp(widthPixels, context)
+        screenWidthInDp = convertPixelsToDp(widthPixels)
         return screenWidthInDp
     }
 
-    private fun getScreenHeight(context: Context): Float {
+    private fun getScreenHeight(): Float {
         val heightPixels: Int = Resources.getSystem().displayMetrics.heightPixels
-        screenWidthInDp = convertPixelsToDp(heightPixels, context)
-        return screenWidthInDp
+        screenHeightInDp = convertPixelsToDp(heightPixels)
+        return screenHeightInDp
     }
 
-    private fun convertPixelsToDp(px: Int, context: Context): Float =
-        px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-
+    private fun convertPixelsToDp(px: Int): Float {
+        val systemDensityDpi: Int = Resources.getSystem().displayMetrics.densityDpi
+        return px / (systemDensityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+    }
 }

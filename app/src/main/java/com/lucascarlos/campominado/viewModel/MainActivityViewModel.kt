@@ -1,7 +1,6 @@
 package com.lucascarlos.campominado.viewModel
 
-import android.content.ContentValues.TAG
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lucascarlos.campominado.model.Column
@@ -13,20 +12,25 @@ class MainActivityViewModel : ViewModel() {
     private val params = Params()
 
     private var _board: MutableLiveData<List<Column>> = MutableLiveData()
+    private var _flagsAmount: MutableLiveData<Int> = MutableLiveData(params.getMinesAmount())
+    val flagsAmount: LiveData<Int> get() = _flagsAmount
+    private val _columnAmount: MutableLiveData<Int> = MutableLiveData(params.getColumnsAmount())
+    private var _rowsAmount: MutableLiveData<Int> = MutableLiveData(params.getRowsAmount())
+    private var _minesAmount: MutableLiveData<Int> = MutableLiveData(params.getMinesAmount())
 
     init {
         createBoard()
     }
 
-    fun getBoardObserver(): MutableLiveData<List<Column>> {
-        return _board
-    }
+    fun getBoardObserver(): MutableLiveData<List<Column>> = _board
+
+    fun getFlagsAmountObserver(): MutableLiveData<Int> = _flagsAmount
 
     private fun createBoard() {
         val initialBoard =
-            List(12) { currentColumn ->
+            List(_columnAmount.value!!) { currentColumn ->
                 Column(
-                    List(20) { currentRow ->
+                    List(_rowsAmount.value!!) { currentRow ->
                         Field(
                             row = currentRow,
                             column = currentColumn,
@@ -39,7 +43,7 @@ class MainActivityViewModel : ViewModel() {
                     }
                 )
             }
-        spreadMines(initialBoard, 10)
+        spreadMines(initialBoard, _minesAmount.value!!)
     }
 
     private fun spreadMines(board: List<Column>, minesAmount: Int) {
@@ -132,9 +136,23 @@ class MainActivityViewModel : ViewModel() {
 
         if (field != null) {
             if (!field.opened) {
-                field.flagged = !field.flagged
+                if (!field.flagged) {
+                    field.flagged = true
+                    decreaseFlagCounter()
+                } else {
+                    field.flagged = false
+                    increaseFlagCounter()
+                }
             }
         }
         _board.postValue(tempBoard)
+    }
+
+    private fun increaseFlagCounter() {
+        _flagsAmount.value = _flagsAmount.value?.plus(1)
+    }
+
+    private fun decreaseFlagCounter() {
+        _flagsAmount.value = _flagsAmount.value?.minus(1)
     }
 }
