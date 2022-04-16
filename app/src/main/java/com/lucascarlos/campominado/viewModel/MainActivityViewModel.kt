@@ -12,11 +12,10 @@ class MainActivityViewModel : ViewModel() {
     private val params = Params()
 
     private var _board: MutableLiveData<List<Column>> = MutableLiveData()
-    private var _flagsAmount: MutableLiveData<Int> = MutableLiveData(params.getMinesAmount())
-    val flagsAmount: LiveData<Int> get() = _flagsAmount
-    private val _columnAmount: MutableLiveData<Int> = MutableLiveData(params.getColumnsAmount())
-    private var _rowsAmount: MutableLiveData<Int> = MutableLiveData(params.getRowsAmount())
-    private var _minesAmount: MutableLiveData<Int> = MutableLiveData(params.getMinesAmount())
+    var _flagsAmount: MutableLiveData<Int> = MutableLiveData(params.getMinesAmount())
+    private var columnAmount: Int = params.getColumnsAmount()
+    private var rowsAmount: Int = params.getRowsAmount()
+    private var minesAmount: Int = params.getMinesAmount()
 
     init {
         createBoard()
@@ -28,9 +27,9 @@ class MainActivityViewModel : ViewModel() {
 
     private fun createBoard() {
         val initialBoard =
-            List(_columnAmount.value!!) { currentColumn ->
+            List(columnAmount) { currentColumn ->
                 Column(
-                    List(_rowsAmount.value!!) { currentRow ->
+                    List(rowsAmount) { currentRow ->
                         Field(
                             row = currentRow,
                             column = currentColumn,
@@ -43,7 +42,7 @@ class MainActivityViewModel : ViewModel() {
                     }
                 )
             }
-        spreadMines(initialBoard, _minesAmount.value!!)
+        spreadMines(initialBoard, minesAmount)
     }
 
     private fun spreadMines(board: List<Column>, minesAmount: Int) {
@@ -154,5 +153,10 @@ class MainActivityViewModel : ViewModel() {
 
     private fun decreaseFlagCounter() {
         _flagsAmount.value = _flagsAmount.value?.minus(1)
+    }
+
+    fun restartGame() {
+        createBoard()
+        _flagsAmount = MutableLiveData(0)
     }
 }

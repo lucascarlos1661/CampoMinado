@@ -67,6 +67,7 @@ class FieldAdapter(
                 if (currentField.flagged or currentField.opened) return@setOnClickListener
                 viewModel.viewModelScope.launch {
                     viewModel.openField(currentField.column, currentField.row)
+                    notifyItemChanged(position)
                 }
             }
 

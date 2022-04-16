@@ -30,6 +30,10 @@ class MainActivity : AppCompatActivity() {
                 recyclerViewAdapter = ColumnAdapter(this@MainActivity) { viewModelStore }
                 adapter = recyclerViewAdapter
             }
+
+            restartGameButton.setOnClickListener{
+                viewModel.restartGame()
+            }
         }
 
         viewModel.getBoardObserver().observe(this) {
@@ -38,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         viewModel.getFlagsAmountObserver().observe(this) {
-            binding.flagCounter.text = viewModel.flagsAmount.value.toString()
+            binding.flagCounter.text = viewModel._flagsAmount.value.toString()
         }
     }
 }
