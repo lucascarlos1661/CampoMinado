@@ -4,4 +4,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="flag_counter">0</string>
     <string name="restart_game_button_text">Reiniciar jogo</string>
+    <string name="lost_game_title">Você perdeu</string>
+    <string name="lost_game_message">Ohh não, você perdeu o jogo =(</string>
+    <string name="lost_game_positive_button">Jogar novamente</string>
+    <string name="lost_game_negative_button">Sair</string>
 </resources>

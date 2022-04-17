@@ -1,6 +1,5 @@
 package com.lucascarlos.campominado.viewModel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lucascarlos.campominado.model.Column
@@ -11,19 +10,17 @@ class MainActivityViewModel : ViewModel() {
 
     private val params = Params()
 
-    private var _board: MutableLiveData<List<Column>> = MutableLiveData()
-    var _flagsAmount: MutableLiveData<Int> = MutableLiveData(params.getMinesAmount())
+    var board: MutableLiveData<List<Column>> = MutableLiveData()
+    var flagCounter: MutableLiveData<Int> = MutableLiveData(params.getMinesAmount())
     private var columnAmount: Int = params.getColumnsAmount()
     private var rowsAmount: Int = params.getRowsAmount()
     private var minesAmount: Int = params.getMinesAmount()
 
+    var lostGame: MutableLiveData<Boolean> = MutableLiveData()
+
     init {
         createBoard()
     }
-
-    fun getBoardObserver(): MutableLiveData<List<Column>> = _board
-
-    fun getFlagsAmountObserver(): MutableLiveData<Int> = _flagsAmount
 
     private fun createBoard() {
         val initialBoard =
@@ -59,11 +56,11 @@ class MainActivityViewModel : ViewModel() {
                 minesPlanted++
             }
         }
-        _board.postValue(board)
+        this.board.postValue(board)
     }
 
     private fun getNeighbors(column: Int, row: Int): MutableList<Field> {
-        val tempBoard = _board.value
+        val tempBoard = board.value
         val neighbors = mutableListOf<Field>()
         val columns = listOf(column - 1, column, column + 1)
         val rows = listOf(row - 1, row, row + 1)
@@ -103,7 +100,10 @@ class MainActivityViewModel : ViewModel() {
     }
 
     fun openField(column: Int, row: Int) {
-        val tempBoard = _board.value
+
+        if (lostGame.value == true) return
+
+        val tempBoard = board.value
         val field = tempBoard?.get(column)?.field?.get(row)
 
         if (field != null) {
@@ -112,6 +112,7 @@ class MainActivityViewModel : ViewModel() {
                 when {
                     field.mined -> {
                         field.exploded = true
+                        lostGame()
                     }
                     safeNeighborhood(column, row) -> {
                         val neighbors = getNeighbors(column, row)
@@ -126,11 +127,14 @@ class MainActivityViewModel : ViewModel() {
                 }
             }
         }
-        _board.postValue(tempBoard)
+        board.postValue(tempBoard)
     }
 
     fun flagField(column: Int, row: Int) {
-        val tempBoard = _board.value
+
+        if (lostGame.value == true) return
+
+        val tempBoard = board.value
         val field = tempBoard?.get(column)?.field?.get(row)
 
         if (field != null) {
@@ -144,19 +148,34 @@ class MainActivityViewModel : ViewModel() {
                 }
             }
         }
-        _board.postValue(tempBoard)
+        board.postValue(tempBoard)
     }
 
     private fun increaseFlagCounter() {
-        _flagsAmount.value = _flagsAmount.value?.plus(1)
+        flagCounter.value = flagCounter.value?.plus(1)
     }
 
     private fun decreaseFlagCounter() {
-        _flagsAmount.value = _flagsAmount.value?.minus(1)
+        flagCounter.value = flagCounter.value?.minus(1)
     }
 
     fun restartGame() {
+        lostGame.value = false
+        flagCounter.value = params.getMinesAmount()
         createBoard()
-        _flagsAmount = MutableLiveData(0)
+    }
+
+    private fun lostGame() {
+        val tempBoard: List<Column>? = board.value
+
+        tempBoard?.forEach { row ->
+            row.field.forEach { field ->
+                if (field.mined || field.flagged) {
+                    field.opened = true
+                }
+            }
+        }
+        board.postValue(tempBoard)
+        lostGame.value = true
     }
 }

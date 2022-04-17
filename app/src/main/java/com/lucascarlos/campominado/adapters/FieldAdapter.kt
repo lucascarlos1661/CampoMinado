@@ -1,7 +1,6 @@
 package com.lucascarlos.campominado.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,11 +40,41 @@ class FieldAdapter(
         val currentField = fieldList[position]
 
         with(holder.binding) {
+
+            setField(currentField, this)
+
+            field.setOnClickListener {
+                if (currentField.flagged or currentField.opened) return@setOnClickListener
+                viewModel.viewModelScope.launch {
+                    viewModel.openField(currentField.column, currentField.row)
+                    notifyItemChanged(position)
+                }
+            }
+
+            field.setOnLongClickListener {
+                viewModel.viewModelScope.launch {
+                    viewModel.flagField(currentField.column, currentField.row)
+                }
+                true
+            }
+        }
+    }
+
+    private fun setField(currentField: Field, binding: FieldItemBinding) {
+        with(binding) {
             when {
-                currentField.exploded && currentField.exploded -> {
+                currentField.opened && currentField.flagged && !currentField.mined -> {
                     regularField.visibility = View.GONE
+                    notMinedField.visibility = View.VISIBLE
+                }
+                currentField.opened && currentField.flagged && currentField.mined -> {
+                    flag.visibility = View.VISIBLE
+                }
+                currentField.opened && currentField.mined && !currentField.exploded -> {
                     minedField.visibility = View.VISIBLE
-                    return
+                }
+                currentField.exploded -> {
+                    explodedField.visibility = View.VISIBLE
                 }
                 currentField.opened -> {
                     regularField.visibility = View.GONE
@@ -61,21 +90,6 @@ class FieldAdapter(
                 currentField.flagged -> {
                     flag.visibility = View.VISIBLE
                 }
-            }
-
-            field.setOnClickListener {
-                if (currentField.flagged or currentField.opened) return@setOnClickListener
-                viewModel.viewModelScope.launch {
-                    viewModel.openField(currentField.column, currentField.row)
-                    notifyItemChanged(position)
-                }
-            }
-
-            field.setOnLongClickListener {
-                viewModel.viewModelScope.launch {
-                    viewModel.flagField(currentField.column, currentField.row)
-                }
-                true
             }
         }
     }

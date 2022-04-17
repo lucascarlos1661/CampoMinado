@@ -1,10 +1,12 @@
 package com.lucascarlos.campominado
 
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.app.AlertDialog
 import com.lucascarlos.campominado.adapters.ColumnAdapter
 import com.lucascarlos.campominado.databinding.ActivityMainBinding
 import com.lucascarlos.campominado.viewModel.MainActivityViewModel
@@ -31,18 +33,40 @@ class MainActivity : AppCompatActivity() {
                 adapter = recyclerViewAdapter
             }
 
-            restartGameButton.setOnClickListener{
-                viewModel.restartGame()
+            restartGameButton.setOnClickListener {
+                restartGame()
             }
         }
 
-        viewModel.getBoardObserver().observe(this) {
+        viewModel.board.observe(this) {
             recyclerViewAdapter.setListData(it)
             recyclerViewAdapter.notifyDataSetChanged()
         }
 
-        viewModel.getFlagsAmountObserver().observe(this) {
-            binding.flagCounter.text = viewModel._flagsAmount.value.toString()
+        viewModel.flagCounter.observe(this) {
+            binding.flagCounter.text = viewModel.flagCounter.value.toString()
         }
+
+        viewModel.lostGame.observe(this) { lose ->
+            if (lose) {
+                val alert = AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.lost_game_title))
+                    .setMessage(getString(R.string.lost_game_message))
+                    .setCancelable(true)
+                    .setNegativeButton(getString(R.string.lost_game_negative_button)) { _, _ ->
+                    }
+                    .setPositiveButton(getString(R.string.lost_game_positive_button)) { _, _ ->
+                        viewModel.lostGame.value = false
+                        restartGame()
+                    }
+                    .show()
+                alert.getButton(DialogInterface.BUTTON_POSITIVE).isAllCaps = false
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE).isAllCaps = false
+            }
+        }
+    }
+
+    private fun restartGame() {
+        viewModel.restartGame()
     }
 }
