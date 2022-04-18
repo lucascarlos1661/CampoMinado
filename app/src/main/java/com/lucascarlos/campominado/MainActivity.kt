@@ -47,15 +47,33 @@ class MainActivity : AppCompatActivity() {
             binding.flagCounter.text = viewModel.flagCounter.value.toString()
         }
 
+        viewModel.wonGame.observe(this) { won ->
+            if (won) {
+                val alert = AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.won_game_title))
+                    .setMessage(getString(R.string.won_game_message))
+                    .setCancelable(true)
+                    .setNegativeButton(getString(R.string.game_negative_button)) { _, _ ->
+                    }
+                    .setPositiveButton(getString(R.string.game_positive_button)) { _, _ ->
+                        viewModel.lostGame.value = false
+                        restartGame()
+                    }
+                    .show()
+                alert.getButton(DialogInterface.BUTTON_POSITIVE).isAllCaps = false
+                alert.getButton(DialogInterface.BUTTON_NEGATIVE).isAllCaps = false
+            }
+        }
+
         viewModel.lostGame.observe(this) { lose ->
             if (lose) {
                 val alert = AlertDialog.Builder(this)
                     .setTitle(getString(R.string.lost_game_title))
                     .setMessage(getString(R.string.lost_game_message))
                     .setCancelable(true)
-                    .setNegativeButton(getString(R.string.lost_game_negative_button)) { _, _ ->
+                    .setNegativeButton(getString(R.string.game_negative_button)) { _, _ ->
                     }
-                    .setPositiveButton(getString(R.string.lost_game_positive_button)) { _, _ ->
+                    .setPositiveButton(getString(R.string.game_positive_button)) { _, _ ->
                         viewModel.lostGame.value = false
                         restartGame()
                     }

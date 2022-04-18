@@ -6,6 +6,8 @@
     <string name="restart_game_button_text">Reiniciar jogo</string>
     <string name="lost_game_title">Você perdeu</string>
     <string name="lost_game_message">Ohh não, você perdeu o jogo =(</string>
-    <string name="lost_game_positive_button">Jogar novamente</string>
-    <string name="lost_game_negative_button">Sair</string>
+    <string name="won_game_message">Ai sim, você ganhou! Parabéns =)</string>
+    <string name="game_positive_button">Jogar novamente</string>
+    <string name="game_negative_button">Sair</string>
+    <string name="won_game_title">Você ganhou</string>
 </resources>

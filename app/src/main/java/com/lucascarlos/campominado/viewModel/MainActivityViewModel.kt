@@ -1,5 +1,6 @@
 package com.lucascarlos.campominado.viewModel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lucascarlos.campominado.model.Column
@@ -12,11 +13,14 @@ class MainActivityViewModel : ViewModel() {
 
     var board: MutableLiveData<List<Column>> = MutableLiveData()
     var flagCounter: MutableLiveData<Int> = MutableLiveData(params.getMinesAmount())
-    private var columnAmount: Int = params.getColumnsAmount()
+    private var columnsAmount: Int = params.getColumnsAmount()
     private var rowsAmount: Int = params.getRowsAmount()
     private var minesAmount: Int = params.getMinesAmount()
+    private var fieldNonMinedAmount: Int = rowsAmount * columnsAmount - minesAmount
+    private var fieldOpenedAmount: Int = 0
 
     var lostGame: MutableLiveData<Boolean> = MutableLiveData()
+    var wonGame: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         createBoard()
@@ -24,7 +28,7 @@ class MainActivityViewModel : ViewModel() {
 
     private fun createBoard() {
         val initialBoard =
-            List(columnAmount) { currentColumn ->
+            List(columnsAmount) { currentColumn ->
                 Column(
                     List(rowsAmount) { currentRow ->
                         Field(
@@ -109,6 +113,11 @@ class MainActivityViewModel : ViewModel() {
         if (field != null) {
             if (!field.opened) {
                 field.opened = true
+                fieldOpenedAmount++
+
+                if (fieldOpenedAmount == fieldNonMinedAmount) {
+                    wonGame()
+                }
                 when {
                     field.mined -> {
                         field.exploded = true
@@ -161,11 +170,23 @@ class MainActivityViewModel : ViewModel() {
 
     fun restartGame() {
         lostGame.value = false
+        wonGame.value = false
+        fieldOpenedAmount = 0
         flagCounter.value = params.getMinesAmount()
         createBoard()
     }
 
     private fun lostGame() {
+        openAllFields()
+        lostGame.value = true
+    }
+
+    private fun wonGame() {
+        openAllFields()
+        wonGame.value = true
+    }
+
+    private fun openAllFields() {
         val tempBoard: List<Column>? = board.value
 
         tempBoard?.forEach { row ->
@@ -176,6 +197,5 @@ class MainActivityViewModel : ViewModel() {
             }
         }
         board.postValue(tempBoard)
-        lostGame.value = true
     }
 }
