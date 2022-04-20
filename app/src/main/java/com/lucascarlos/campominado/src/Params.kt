@@ -10,13 +10,31 @@ class Params {
     private val headerRatio: Double = 0.15
     private val marginHorizontalBoard = 5
     private val marginBottomBoard = 6
-    private val difficultLevel: Double = 0.07
+    private var percentageOfMines: Double = 0.0
+
+    //The difficulty level will be calculated through the option selected by the user
+    //Mine percentage is fixed. 7% for beginner, 13% for Intermediate and 20% for Expert
+
+    private val difficultLevelBeginner: Double = 0.07
+    private val difficultLevelIntermediate: Double = 0.13
+    private val difficultLevelExpert: Double = 0.2
 
     private var screenWidthInDp: Float = 0F
     private var screenHeightInDp: Float = 0F
 
-    fun getMinesAmount(): Int {
-        return ((getColumnsAmount() * getRowsAmount()) * difficultLevel).toInt()
+    fun getMinesAmount(gameDifficultSelected: Int): Int {
+        when (gameDifficultSelected) {
+            0 -> {
+                percentageOfMines = difficultLevelBeginner
+            }
+            1 -> {
+                percentageOfMines = difficultLevelIntermediate
+            }
+            2 -> {
+                percentageOfMines = difficultLevelExpert
+            }
+        }
+        return ((getColumnsAmount() * getRowsAmount()) * percentageOfMines).toInt()
     }
 
     fun getColumnsAmount(): Int {

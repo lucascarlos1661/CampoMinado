@@ -1,6 +1,5 @@
 package com.lucascarlos.campominado.viewModel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.lucascarlos.campominado.model.Column
@@ -12,10 +11,12 @@ class MainActivityViewModel : ViewModel() {
     private val params = Params()
 
     var board: MutableLiveData<List<Column>> = MutableLiveData()
-    var flagCounter: MutableLiveData<Int> = MutableLiveData(params.getMinesAmount())
+    var gameDifficultySelected: MutableLiveData<Int> = MutableLiveData(0)
+    var flagCounter: MutableLiveData<Int> =
+        MutableLiveData(params.getMinesAmount(gameDifficultySelected.value!!))
     private var columnsAmount: Int = params.getColumnsAmount()
     private var rowsAmount: Int = params.getRowsAmount()
-    private var minesAmount: Int = params.getMinesAmount()
+    private var minesAmount: Int = params.getMinesAmount(gameDifficultySelected.value!!)
     private var fieldNonMinedAmount: Int = rowsAmount * columnsAmount - minesAmount
     private var fieldOpenedAmount: Int = 0
 
@@ -46,25 +47,24 @@ class MainActivityViewModel : ViewModel() {
         spreadMines(initialBoard, minesAmount)
     }
 
-    private fun spreadMines(board: List<Column>, minesAmount: Int) {
-        val columns = board.size - 1
-        val rows = board[0].field.size - 1
+    private fun spreadMines(initialBoard: List<Column>, minesAmount: Int) {
+        val columns = initialBoard.size - 1
+        val rows = initialBoard[0].field.size - 1
         var minesPlanted = 0
 
         while (minesPlanted < minesAmount) {
             val rowSel = (0..rows).random()
             val columnSel = (0..columns).random()
 
-            if (!board[columnSel].field[rowSel].mined) {
-                board[columnSel].field[rowSel].mined = true
+            if (!initialBoard[columnSel].field[rowSel].mined) {
+                initialBoard[columnSel].field[rowSel].mined = true
                 minesPlanted++
             }
         }
-        this.board.postValue(board)
+        board.postValue(initialBoard)
     }
 
     private fun getNeighbors(column: Int, row: Int): MutableList<Field> {
-        val tempBoard = board.value
         val neighbors = mutableListOf<Field>()
         val columns = listOf(column - 1, column, column + 1)
         val rows = listOf(row - 1, row, row + 1)
@@ -76,15 +76,15 @@ class MainActivityViewModel : ViewModel() {
                     different = true
 
                 var validRow = false
-                if (r >= 0 && r < tempBoard?.get(0)?.field?.size!!)
+                if (r >= 0 && r < board.value?.get(0)?.field?.size!!)
                     validRow = true
 
                 var validColumn = false
-                if (c >= 0 && c < tempBoard?.size!!)
+                if (c >= 0 && c < board.value?.size!!)
                     validColumn = true
 
                 if (different && validRow && validColumn) {
-                    neighbors.add(tempBoard?.get(c)?.field?.get(r)!!)
+                    neighbors.add(board.value?.get(c)?.field?.get(r)!!)
                 }
             }
         }
@@ -107,8 +107,7 @@ class MainActivityViewModel : ViewModel() {
 
         if (lostGame.value == true) return
 
-        val tempBoard = board.value
-        val field = tempBoard?.get(column)?.field?.get(row)
+        val field = board.value?.get(column)?.field?.get(row)
 
         if (field != null) {
             if (!field.opened) {
@@ -136,15 +135,14 @@ class MainActivityViewModel : ViewModel() {
                 }
             }
         }
-        board.postValue(tempBoard)
+        board.postValue(board.value)
     }
 
     fun flagField(column: Int, row: Int) {
 
         if (lostGame.value == true) return
 
-        val tempBoard = board.value
-        val field = tempBoard?.get(column)?.field?.get(row)
+        val field = board.value?.get(column)?.field?.get(row)
 
         if (field != null) {
             if (!field.opened) {
@@ -157,7 +155,6 @@ class MainActivityViewModel : ViewModel() {
                 }
             }
         }
-        board.postValue(tempBoard)
     }
 
     private fun increaseFlagCounter() {
@@ -172,7 +169,8 @@ class MainActivityViewModel : ViewModel() {
         lostGame.value = false
         wonGame.value = false
         fieldOpenedAmount = 0
-        flagCounter.value = params.getMinesAmount()
+        minesAmount = params.getMinesAmount(gameDifficultySelected.value!!)
+        flagCounter.value = params.getMinesAmount(gameDifficultySelected.value!!)
         createBoard()
     }
 

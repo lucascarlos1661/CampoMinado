@@ -10,4 +10,10 @@
     <string name="game_positive_button">Jogar novamente</string>
     <string name="game_negative_button">Sair</string>
     <string name="won_game_title">Você ganhou</string>
+    
+    <string-array name="difficulties">
+        <item name="beginner">Fácil</item>
+        <item name="intermediate">Médio</item>
+        <item name="hard">Difícil</item>
+    </string-array>
 </resources>

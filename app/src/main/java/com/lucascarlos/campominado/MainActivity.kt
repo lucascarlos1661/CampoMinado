@@ -2,6 +2,9 @@ package com.lucascarlos.campominado
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+        setSpinnerDifficulty(binding)
 
         binding.apply {
             recyclerFields.apply {
@@ -45,6 +49,10 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.flagCounter.observe(this) {
             binding.flagCounter.text = viewModel.flagCounter.value.toString()
+        }
+
+        viewModel.gameDifficultySelected.observe(this) {
+            changeGameDifficulty()
         }
 
         viewModel.wonGame.observe(this) { won ->
@@ -81,6 +89,36 @@ class MainActivity : AppCompatActivity() {
                 alert.getButton(DialogInterface.BUTTON_POSITIVE).isAllCaps = false
                 alert.getButton(DialogInterface.BUTTON_NEGATIVE).isAllCaps = false
             }
+        }
+    }
+
+    private fun changeGameDifficulty() {
+        restartGame()
+    }
+
+    private fun setSpinnerDifficulty(binding: ActivityMainBinding) {
+        ArrayAdapter.createFromResource(
+            this@MainActivity,
+            R.array.difficulties,
+            R.layout.spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.spinnerDifficultySelector.adapter = adapter
+
+            binding.spinnerDifficultySelector.onItemSelectedListener =
+                object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        adapterView: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        viewModel.gameDifficultySelected.value = adapterView?.selectedItemPosition
+                    }
+
+                    override fun onNothingSelected(p0: AdapterView<*>?) {
+                    }
+                }
         }
     }
 

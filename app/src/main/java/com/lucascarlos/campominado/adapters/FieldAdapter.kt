@@ -55,6 +55,7 @@ class FieldAdapter(
                 viewModel.viewModelScope.launch {
                     viewModel.flagField(currentField.column, currentField.row)
                 }
+                notifyItemChanged(position)
                 true
             }
         }
