@@ -52,6 +52,9 @@ class FieldAdapter(
             }
 
             field.setOnLongClickListener {
+                if (currentField.opened) {
+                    return@setOnLongClickListener true
+                }
                 viewModel.viewModelScope.launch {
                     viewModel.flagField(currentField.column, currentField.row)
                 }
@@ -65,20 +68,19 @@ class FieldAdapter(
         with(binding) {
             when {
                 currentField.opened && currentField.flagged && !currentField.mined -> {
-                    regularField.visibility = View.GONE
-                    notMinedField.visibility = View.VISIBLE
+                    fieldImageView.setImageResource(R.drawable.not_mined_field)
                 }
                 currentField.opened && currentField.flagged && currentField.mined -> {
                     flag.visibility = View.VISIBLE
                 }
                 currentField.opened && currentField.mined && !currentField.exploded -> {
-                    minedField.visibility = View.VISIBLE
+                    fieldImageView.visibility = View.VISIBLE
                 }
                 currentField.exploded -> {
-                    explodedField.visibility = View.VISIBLE
+                    fieldImageView.setImageResource(R.drawable.mined_field)
                 }
                 currentField.opened -> {
-                    regularField.visibility = View.GONE
+                    fieldImageView.setImageResource(R.drawable.opened_field)
                     if (currentField.nearMines > 0) {
                         nearMines.text = currentField.nearMines.toString()
                         nearMines.setTextColor(getNearMinesTextColor(currentField.nearMines))
@@ -86,7 +88,6 @@ class FieldAdapter(
                     } else {
                         nearMines.visibility = View.GONE
                     }
-                    openedField.visibility = View.VISIBLE
                 }
                 currentField.flagged -> {
                     flag.visibility = View.VISIBLE

@@ -17,48 +17,26 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/opened_field"
+            android:id="@+id/field_image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/opened_field"
-            android:visibility="gone" />
+            android:src="@drawable/regular_field" />
 
         <TextView
             android:id="@+id/near_mines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/opened_field"
-            android:layout_alignTop="@+id/opened_field"
-            android:layout_alignEnd="@+id/opened_field"
-            android:layout_alignBottom="@+id/opened_field"
+            android:layout_alignStart="@+id/field_image_view"
+            android:layout_alignTop="@+id/field_image_view"
+            android:layout_alignEnd="@+id/field_image_view"
+            android:layout_alignBottom="@+id/field_image_view"
             android:layout_margin="1dp"
             android:gravity="center"
             android:visibility="gone" />
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/regular_field"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/regular_field"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/exploded_field"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/mined_field"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/mined_field"
+        android:id="@+id/mine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/mine"
@@ -74,17 +52,6 @@
         android:layout_height="wrap_content"
         android:padding="3dp"
         android:src="@drawable/flag"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/not_mined_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/note_mined_field"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

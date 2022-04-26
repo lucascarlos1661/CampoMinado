@@ -9,11 +9,12 @@
         android:id="@+id/recycler_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:itemCount="13"
         app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="13"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/field_item"
         tools:orientation="horizontal" />

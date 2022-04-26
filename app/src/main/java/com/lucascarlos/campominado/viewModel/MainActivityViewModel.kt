@@ -145,14 +145,12 @@ class MainActivityViewModel : ViewModel() {
         val field = board.value?.get(column)?.field?.get(row)
 
         if (field != null) {
-            if (!field.opened) {
-                if (!field.flagged) {
-                    field.flagged = true
-                    decreaseFlagCounter()
-                } else {
-                    field.flagged = false
-                    increaseFlagCounter()
-                }
+            if (!field.flagged) {
+                field.flagged = true
+                decreaseFlagCounter()
+            } else {
+                field.flagged = false
+                increaseFlagCounter()
             }
         }
     }

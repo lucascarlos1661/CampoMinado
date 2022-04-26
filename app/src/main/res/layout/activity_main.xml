@@ -50,6 +50,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/restart_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -59,9 +60,9 @@
             <Spinner
                 android:id="@+id/spinner_difficulty_selector"
                 android:layout_width="wrap_content"
-                android:backgroundTint="@color/black"
-                android:layout_marginEnd="16dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -81,6 +82,7 @@
             android:id="@+id/recycler_fields"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:overScrollMode="never"
             tools:itemCount="1"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/column_item"
