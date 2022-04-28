@@ -74,7 +74,7 @@ class FieldAdapter(
                     flag.visibility = View.VISIBLE
                 }
                 currentField.opened && currentField.mined && !currentField.exploded -> {
-                    fieldImageView.visibility = View.VISIBLE
+                    mine.visibility = View.VISIBLE
                 }
                 currentField.exploded -> {
                     fieldImageView.setImageResource(R.drawable.mined_field)
