@@ -12,11 +12,13 @@ class MainActivityViewModel : ViewModel() {
 
     var board: MutableLiveData<List<Column>> = MutableLiveData()
     var gameDifficultySelected: MutableLiveData<Int> = MutableLiveData(0)
-    var flagCounter: MutableLiveData<Int> =
-        MutableLiveData(params.getMinesAmount(gameDifficultySelected.value!!))
+
     private var columnsAmount: Int = params.getColumnsAmount()
     private var rowsAmount: Int = params.getRowsAmount()
+
     private var minesAmount: Int = params.getMinesAmount(gameDifficultySelected.value!!)
+    var flagCounter: MutableLiveData<Int> = MutableLiveData(minesAmount)
+
     private var fieldNonMinedAmount: Int = rowsAmount * columnsAmount - minesAmount
     private var fieldOpenedAmount: Int = 0
 
@@ -168,7 +170,8 @@ class MainActivityViewModel : ViewModel() {
         wonGame.value = false
         fieldOpenedAmount = 0
         minesAmount = params.getMinesAmount(gameDifficultySelected.value!!)
-        flagCounter.value = params.getMinesAmount(gameDifficultySelected.value!!)
+        fieldNonMinedAmount = rowsAmount * columnsAmount - minesAmount
+        flagCounter.value = minesAmount
         createBoard()
     }
 
