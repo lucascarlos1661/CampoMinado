@@ -63,7 +63,7 @@ class MainActivityViewModel : ViewModel() {
                 minesPlanted++
             }
         }
-        board.postValue(initialBoard)
+        board.value = initialBoard
     }
 
     private fun getNeighbors(column: Int, row: Int): MutableList<Field> {
@@ -137,7 +137,7 @@ class MainActivityViewModel : ViewModel() {
                 }
             }
         }
-        board.postValue(board.value)
+        board.value = board.value
     }
 
     fun flagField(column: Int, row: Int) {
@@ -155,6 +155,7 @@ class MainActivityViewModel : ViewModel() {
                 increaseFlagCounter()
             }
         }
+        board.value = board.value
     }
 
     private fun increaseFlagCounter() {
@@ -195,6 +196,6 @@ class MainActivityViewModel : ViewModel() {
                 }
             }
         }
-        board.postValue(tempBoard)
+        board.value = tempBoard
     }
 }
