@@ -111,7 +111,7 @@ class MainActivityViewModel : ViewModel() {
 
         val field = board.value?.get(column)?.field?.get(row)
 
-        if (field != null) {
+        if (field != null && !field.flagged) {
             if (!field.opened) {
                 field.opened = true
                 fieldOpenedAmount++
