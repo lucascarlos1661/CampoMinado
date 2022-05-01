@@ -31,6 +31,7 @@
             android:layout_alignEnd="@+id/field_image_view"
             android:layout_alignBottom="@+id/field_image_view"
             android:layout_margin="1dp"
+            android:fontFamily="@font/fonts"
             android:gravity="center"
             android:visibility="gone" />
     </RelativeLayout>

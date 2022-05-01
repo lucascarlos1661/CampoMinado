@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+
+<!--    The FontStruction “MINE-SWEEPER”-->
+<!--    (https://fontstruct.com/fontstructions/show/1501665) by Gangetsha Lyx is-->
+<!--    licensed under a Creative Commons Attribution Share Alike license-->
+<!--    (http://creativecommons.org/licenses/by-sa/3.0/).-->
+
+    <font
+        android:font="@font/minesweeper"
+        android:fontStyle="normal"
+        android:fontWeight="100" />
+</font-family>
