@@ -23,6 +23,7 @@ class FieldAdapter(
     RecyclerView.Adapter<FieldAdapter.ViewHolder>() {
 
     private lateinit var viewModel: MainActivityViewModel
+    private var safeNeighborhood: Boolean? = null
 
     inner class ViewHolder(val binding: FieldItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -40,27 +41,41 @@ class FieldAdapter(
         val currentField = fieldList[position]
 
         with(holder.binding) {
-
             setField(currentField, this)
 
             field.setOnClickListener {
-                if (currentField.flagged or currentField.opened) return@setOnClickListener
-                viewModel.viewModelScope.launch {
-                    viewModel.openField(currentField.column, currentField.row)
-                    notifyItemChanged(position)
-                }
+                openField(currentField)
             }
 
             field.setOnLongClickListener {
-                if (currentField.opened) {
-                    return@setOnLongClickListener true
-                }
-                viewModel.viewModelScope.launch {
-                    viewModel.flagField(currentField.column, currentField.row)
-                }
-                true
+                flagField(currentField)
+                return@setOnLongClickListener true
             }
         }
+    }
+
+    private fun openField(currentField: Field) {
+        if (currentField.flagged or currentField.opened) return
+        viewModel.viewModelScope.launch {
+            safeNeighborhood = viewModel.openField(currentField.column, currentField.row)
+        }
+        if (safeNeighborhood == false) {
+            notifyItemChanged(currentField.row)
+        } else {
+            viewModel.viewModelScope.launch {
+                viewModel.updateBoard()
+            }
+        }
+    }
+
+    private fun flagField(currentField: Field) {
+        if (currentField.opened) {
+            return
+        }
+        viewModel.viewModelScope.launch {
+            viewModel.flagField(currentField.column, currentField.row)
+        }
+        notifyItemChanged(currentField.row)
     }
 
     private fun setField(currentField: Field, binding: FieldItemBinding) {
@@ -78,6 +93,9 @@ class FieldAdapter(
                 currentField.exploded -> {
                     fieldImageView.setImageResource(R.drawable.mined_field)
                 }
+                currentField.flagged -> {
+                    flag.visibility = View.VISIBLE
+                }
                 currentField.opened -> {
                     fieldImageView.setImageResource(R.drawable.opened_field)
                     if (currentField.nearMines > 0) {
@@ -88,12 +106,11 @@ class FieldAdapter(
                         nearMines.visibility = View.GONE
                     }
                 }
-                currentField.flagged -> {
-                    flag.visibility = View.VISIBLE
-                }
             }
+            if (!currentField.flagged) flag.visibility = View.GONE
         }
     }
+
 
     private fun getNearMinesTextColor(nearMines: Int): Int {
         when (nearMines) {

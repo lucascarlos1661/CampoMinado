@@ -22,7 +22,7 @@ class MainActivityViewModel : ViewModel() {
     private var fieldNonMinedAmount: Int = rowsAmount * columnsAmount - minesAmount
     private var fieldOpenedAmount: Int = 0
 
-    var lostGame: MutableLiveData<Boolean> = MutableLiveData()
+    var gameOver: MutableLiveData<Boolean> = MutableLiveData()
     var wonGame: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
@@ -105,44 +105,49 @@ class MainActivityViewModel : ViewModel() {
         return true
     }
 
-    fun openField(column: Int, row: Int) {
+    fun openField(column: Int, row: Int): (Boolean?) {
 
-        if (lostGame.value == true) return
+        if (gameOver.value == true) return null
 
         val field = board.value?.get(column)?.field?.get(row)
 
-        if (field != null && !field.flagged) {
-            if (!field.opened) {
-                field.opened = true
-                fieldOpenedAmount++
+        if (field != null && !field.flagged && !field.opened) {
+            field.opened = true
+            fieldOpenedAmount++
 
-                if (fieldOpenedAmount == fieldNonMinedAmount) {
-                    wonGame()
+            if (fieldOpenedAmount == fieldNonMinedAmount) {
+                wonGame()
+            }
+            when {
+                field.mined -> {
+                    field.exploded = true
+                    gameOver()
+                    return null
                 }
-                when {
-                    field.mined -> {
-                        field.exploded = true
-                        lostGame()
+                safeNeighborhood(column, row) -> {
+                    val neighbors = getNeighbors(column, row)
+
+                    neighbors.forEach { n ->
+                        openField(n.column, n.row)
                     }
-                    safeNeighborhood(column, row) -> {
-                        val neighbors = getNeighbors(column, row)
-                        neighbors.forEach { n ->
-                            openField(n.column, n.row)
-                        }
-                    }
-                    else -> {
-                        val neighbors = getNeighbors(column, row)
-                        field.nearMines = neighbors.filter { n -> n.mined }.size
-                    }
+                }
+                else -> {
+                    val neighbors = getNeighbors(column, row)
+                    field.nearMines = neighbors.filter { n -> n.mined }.size
+                    return false
                 }
             }
         }
+        return null
+    }
+
+    fun updateBoard() {
         board.value = board.value
     }
 
     fun flagField(column: Int, row: Int) {
 
-        if (lostGame.value == true) return
+        if (gameOver.value == true) return
 
         val field = board.value?.get(column)?.field?.get(row)
 
@@ -155,7 +160,6 @@ class MainActivityViewModel : ViewModel() {
                 increaseFlagCounter()
             }
         }
-        board.value = board.value
     }
 
     private fun increaseFlagCounter() {
@@ -167,7 +171,7 @@ class MainActivityViewModel : ViewModel() {
     }
 
     fun restartGame() {
-        lostGame.value = false
+        gameOver.value = false
         wonGame.value = false
         fieldOpenedAmount = 0
         minesAmount = params.getMinesAmount(gameDifficultySelected.value!!)
@@ -176,9 +180,9 @@ class MainActivityViewModel : ViewModel() {
         createBoard()
     }
 
-    private fun lostGame() {
+    private fun gameOver() {
         openAllFields()
-        lostGame.value = true
+        gameOver.value = true
     }
 
     private fun wonGame() {

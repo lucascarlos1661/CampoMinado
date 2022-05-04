@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                     .setNegativeButton(getString(R.string.game_negative_button)) { _, _ ->
                     }
                     .setPositiveButton(getString(R.string.game_positive_button)) { _, _ ->
-                        viewModel.lostGame.value = false
+                        viewModel.gameOver.value = false
                         restartGame()
                     }
                     .show()
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.lostGame.observe(this) { lose ->
+        viewModel.gameOver.observe(this) { lose ->
             if (lose) {
                 val alert = AlertDialog.Builder(this)
                     .setTitle(getString(R.string.lost_game_title))
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                     .setNegativeButton(getString(R.string.game_negative_button)) { _, _ ->
                     }
                     .setPositiveButton(getString(R.string.game_positive_button)) { _, _ ->
-                        viewModel.lostGame.value = false
+                        viewModel.gameOver.value = false
                         restartGame()
                     }
                     .show()
